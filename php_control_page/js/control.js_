@@ -60,24 +60,6 @@ const init_table = () => {
               </td>
             `;
             break;
-          
-          case "2":
-            content += `
-                  <span id="value_${mes.id}">--</span>
-                  <span style="display: none" id="old_a_${mes.id}">${
-              mes.a
-            }</span>
-                  <span style="display: none" id="old_b_${mes.id}">${
-              mes.b
-            }</span>
-                  <button class="button_group control_setting" onclick="setFormulaOpen(${
-                    mes.id
-                  })" type="button">
-                  ${settingIcon("button_svg control_svg")}
-                  </button>
-              </td>
-            `;
-            break;
 
           default:
             content += `
@@ -403,19 +385,21 @@ const checkRecv = (data, id, command) => {
 
         $(`#status_${id}`).html("上線");
 
-        let D3 = parseInt(data.slice(6, 8), 16);
-        let D4 = parseInt(data.slice(8, 10), 16);
-        let vol_L = parseInt(data.slice(10, 12), 16);
-        let vol_H = parseInt(data.slice(12, 14), 16)<<8;
-        let voltage = (vol_L + vol_H) / 100;
-        
+        let vol = parseInt(data.slice(8, 10), 16);
+        let volDec = parseInt(data.slice(10, 12), 16);
+        let curr = parseInt(data.slice(12, 14), 16);
+        let currDec = parseInt(data.slice(14, 16), 16);
+
+        let voltage = (vol + (volDec << 8)) / 100;
+        let current = (curr + (currDec << 8)) / 100;
+        let resistance = voltage / current;
         console.log(data);
 
         const a = $(`#old_a_${id}`).html();
         const b = $(`#old_b_${id}`).html();
-        //voltage = isFinite(voltage) ? a * voltage + b : voltage;
-        
-        $(`#value_${id}`).html(`接點訊號: ${D3} / 電壓:${voltage}`);
+        resistance = isFinite(resistance) ? a * resistance + b : resistance;
+
+        $(`#value_${id}`).html(`${voltage} / ${current} / ${resistance}`);
         success = true;
       }
       break;
@@ -506,7 +490,7 @@ const setFormulaOpen = (id) => {
   $("#modal").css("display", "block");
   const header = `
     <div class="control_form">
-        <h2 class="f">編輯公式</h2>
+        <h2 class="control_text">編輯公式</h2>
     </div>
   `;
 

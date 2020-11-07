@@ -23,7 +23,7 @@ const logIn = () => {
     success: (data) => {
       const message = JSON.parse(data);
       if (message.valid) {
-        setCookie("accessToken", message.token, 1);
+        setCookie(`accessToken_${site}`, message.token, 1);
         window.location.href = `/${site}/control.php`;
       } else {
         $(".index_error").css("display", "block");

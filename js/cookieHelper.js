@@ -6,12 +6,12 @@ const setCookie = (name, value, days) => {
   document.cookie = `${name}=${value};path=/;expires=${d.toGMTString()}`;
 };
 
-const getCookie = (name = "accessToken") => {
+const getCookie = (name = `accessToken_${site}`) => {
   const v = document.cookie.match(`(^|;) ?${name}=([^;]*)(;|$)`);
   return v ? v[2] : null;
 };
 
-const deleteCookie = (name = "accessToken") => {
+const deleteCookie = (name = `accessToken_${site}`) => {
   setCookie(name, "", -1);
 };
 

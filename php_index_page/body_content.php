@@ -9,7 +9,7 @@
 
     <div class="container">
         <img alt="logo" style="max-width: 300px" src="/<?php echo $site ?>/images/login.jpg">
-        <h5 class="index_title">IoT監測控制系統</h5>
+        <h5 class="index_title">Oil監測控制系統</h5>
         <div class="index_form">
             <span class="index_text">帳號</span>
             <div class="input_group">

@@ -2,7 +2,7 @@
     <!-- Nav bar start-->
     <header class="nav_group">
         <div class="nav_inside">
-            <h6 class="nav_title" id = "nav_title">自動開關控制頁面</h6>
+            <h6 class="nav_title" id = "nav_title">監控頁面</h6>
             <script type="text/javascript">
                 // From `/${site}/js/cookieHelper.js`:
                 $("#nav_title").append(`
