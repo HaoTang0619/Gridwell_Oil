@@ -18,6 +18,7 @@ const init_table = () => {
             <span class="control_name_span" id="name_${mes.id}">${mes.name}</span>
             <span style="display: none" id="IP_${mes.id}">${mes.IP}</span>
             <span style="display: none" id="port_${mes.id}">${mes.port}</span>
+            <span style="display: none" id="nodeID_${mes.id}">${mes.nodeID}</span>
         `;
         name += `
               <button class="button_group control_setting" onclick="editNameOpen(${
@@ -60,7 +61,7 @@ const init_table = () => {
               </td>
             `;
             break;
-          
+
           case "2":
             content += `
                   <span id="value_${mes.id}">--</span>
@@ -129,6 +130,7 @@ const editNameOpen = (id) => {
   const name = $(`#name_${id}`).html();
   const IP = $(`#IP_${id}`).html();
   const port = $(`#port_${id}`).html();
+  const nodeid = $(`#nodeID_${id}`).html();
 
   $("#modal").css("display", "block");
   const header = `
@@ -165,6 +167,15 @@ const editNameOpen = (id) => {
             </fieldset>
         </div>
     </div>
+    <div class="control_form">
+        <span class="control_text">Node ID</span>
+        <div class="input_group">
+            <input type="text" class="input_area" id="new_nodeID" value="${nodeid}" required />
+            <fieldset class="input_field">
+                <legend class="input_legend">輸入Node ID</legend>
+            </fieldset>
+        </div>
+    </div>
   `;
 
   const buttons = `
@@ -188,6 +199,7 @@ const editName = (id) => {
   const name = $("#new_name").val();
   const IP = $("#new_IP").val();
   const port = $("#new_port").val();
+  const nodeid = $("#new_nodeID").val();
   $("#check_backdrop").css("pointer-events", "none");
   disableButton("cancel");
   disableButton("confirm");
@@ -203,6 +215,7 @@ const editName = (id) => {
       name,
       IP,
       port,
+      nodeid,
     },
     success: (data) => {
       const message = JSON.parse(data);
@@ -210,6 +223,7 @@ const editName = (id) => {
         $(`#name_${id}`).text(name);
         $(`#IP_${id}`).text(IP);
         $(`#port_${id}`).text(port);
+        $(`#nodeID_${id}`).text(nodeid);
         closeCheck();
         closeModal();
       } else {
@@ -235,6 +249,9 @@ const switchOnOpen = (id) => {
 };
 
 const switchOn = (id) => {
+  const IP = $(`#IP_${id}`).html();
+  const port = $(`#port_${id}`).html();
+  const nodeid = $(`#nodeID_${id}`).html();
   $("#check_backdrop").css("pointer-events", "none");
   disableButton("cancel");
   disableButton("confirm");
@@ -244,11 +261,11 @@ const switchOn = (id) => {
   const sendCommand = (i) => {
     if (flag) return;
     $.ajax({
-      url: "http://111.185.9.227:2008/onn",
+      url: `http://${IP}:${port}/onn`,
       type: "GET",
       dateType: "jsonp",
       data: {
-        nodeid: id,
+        nodeid,
       },
       async: false,
       success: (data) => {
@@ -277,6 +294,9 @@ const switchOffOpen = (id) => {
 };
 
 const switchOff = (id) => {
+  const IP = $(`#IP_${id}`).html();
+  const port = $(`#port_${id}`).html();
+  const nodeid = $(`#nodeID_${id}`).html();
   $("#check_backdrop").css("pointer-events", "none");
   disableButton("cancel");
   disableButton("confirm");
@@ -286,11 +306,11 @@ const switchOff = (id) => {
   const sendCommand = (i) => {
     if (flag) return;
     $.ajax({
-      url: "http://111.185.9.227:2008/off",
+      url: `http://${IP}:${port}/off`,
       type: "GET",
       dateType: "jsonp",
       data: {
-        nodeid: id,
+        nodeid,
       },
       async: false,
       success: (data) => {
@@ -319,6 +339,9 @@ const switchOnlineOpen = (id) => {
 };
 
 const switchOnline = (id) => {
+  const IP = $(`#IP_${id}`).html();
+  const port = $(`#port_${id}`).html();
+  const nodeid = $(`#nodeID_${id}`).html();
   $("#check_backdrop").css("pointer-events", "none");
   disableButton("cancel");
   disableButton("confirm");
@@ -328,11 +351,11 @@ const switchOnline = (id) => {
   const sendCommand = (i) => {
     if (flag) return;
     $.ajax({
-      url: "http://111.185.9.227:2008/init_stat",
+      url: `http://${IP}:${port}/init_stat`,
       type: "GET",
       dateType: "jsonp",
       data: {
-        nodeid: 1, // Temporary
+        nodeid,
       },
       async: false,
       success: (data) => {
@@ -406,15 +429,15 @@ const checkRecv = (data, id, command) => {
         let D3 = parseInt(data.slice(6, 8), 16);
         let D4 = parseInt(data.slice(8, 10), 16);
         let vol_L = parseInt(data.slice(10, 12), 16);
-        let vol_H = parseInt(data.slice(12, 14), 16)<<8;
+        let vol_H = parseInt(data.slice(12, 14), 16) << 8;
         let voltage = (vol_L + vol_H) / 100;
-        
+
         console.log(data);
 
         const a = $(`#old_a_${id}`).html();
         const b = $(`#old_b_${id}`).html();
         //voltage = isFinite(voltage) ? a * voltage + b : voltage;
-        
+
         $(`#value_${id}`).html(`接點訊號: ${D3} / 電壓:${voltage}`);
         success = true;
       }
@@ -429,16 +452,19 @@ const checkRecv = (data, id, command) => {
 };
 
 const getSwitchStatus = (id, command) => {
+  const IP = $(`#IP_${id}`).html();
+  const port = $(`#port_${id}`).html();
+  const nodeid = $(`#nodeID_${id}`).html();
   let flag = false;
 
   const sendCommand = (i) => {
     if (flag) return;
     $.ajax({
-      url: "http://111.185.9.227:2008/get_stat",
+      url: `http://${IP}:${port}/get_stat`,
       type: "GET",
       dateType: "jsonp",
       data: {
-        nodeid: command === "stat" ? 1 : id, // Temporary
+        nodeid,
       },
       async: false,
       success: (data) => {
