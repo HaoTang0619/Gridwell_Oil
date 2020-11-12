@@ -417,7 +417,7 @@ const checkRecv = (data, id, command) => {
 
     case "stat":
       if (
-        parseInt(data.slice(2, 4), 16) === 1 && // Temporary
+        parseInt(data.slice(2, 4), 16) === id &&
         parseInt(data.slice(4, 6), 16) === 1
       ) {
         if (parseInt(data.slice(6, 8), 16) === 1) $(`#on_off_${id}`).text("On");
