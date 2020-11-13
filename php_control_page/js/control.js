@@ -1,4 +1,23 @@
 // Init table
+
+const init_value = async (num) => {
+  let message;
+  $.ajax({
+    url: `/${site}/php_control_page/api/get_value.php`,
+    type: "POST",
+    async: false,
+    dateType: "text",
+    data: {
+      field: 1,
+      num,
+    },
+    success: (data) => {
+      message = JSON.parse(data);
+    },
+  });
+  return message;
+};
+
 const init_table = () => {
   $.ajax({
     url: `/${site}/php_control_page/api/get_table.php`,
@@ -7,11 +26,12 @@ const init_table = () => {
     data: {
       field: 1,
     },
-    success: (data) => {
+    success: async (data) => {
+      const init = await init_value(JSON.parse(data).length);
       $("#table_body").empty();
 
       const message = JSON.parse(data);
-      message.forEach((mes) => {
+      message.forEach((mes, index) => {
         const tr_start = `<tr class="table_body_tr">`;
         let name = `
           <td class="table_body_td control_name_td">
@@ -46,7 +66,13 @@ const init_table = () => {
 
           case "1":
             content += `
-                  <span id="value_${mes.id}">--</span>
+                  <span id="value_${mes.id}">接點訊號: ${
+              init[index + 1].signal === null ? "未知" : init[index + 1].signal
+            } / 電壓: ${
+              init[index + 1].voltage === null
+                ? "未知"
+                : init[index + 1].voltage
+            }</span>
                   <span style="display: none" id="old_a_${mes.id}">${
               mes.a
             }</span>
@@ -94,8 +120,10 @@ const init_table = () => {
         }
         const status = `
           <td class="table_body_td">
-              <button class="button_group control_online" id="status_${mes.id}" onclick="switchOnlineOpen(${mes.id})" type="button">
-                  更新
+              <button class="button_group control_online" id="status_${
+                mes.id
+              }" onclick="switchOnlineOpen(${mes.id})" type="button">
+                  ${init[index + 1].status === "On" ? "上線" : "未知"}
               </button>
           </td>
         `;
@@ -438,7 +466,7 @@ const checkRecv = (data, id, command) => {
         const b = $(`#old_b_${id}`).html();
         //voltage = isFinite(voltage) ? a * voltage + b : voltage;
 
-        $(`#value_${id}`).html(`接點訊號: ${D3} / 電壓:${voltage}`);
+        $(`#value_${id}`).html(`接點訊號: ${D3} / 電壓: ${voltage}`);
         success = true;
       }
       break;
