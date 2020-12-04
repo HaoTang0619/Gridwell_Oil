@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 }
 mysqli_query($conn, "SET NAMES 'utf8'");
 
-$search = "SELECT * FROM history_$field";
+$search = "SELECT * FROM history_$field ORDER BY `register_time` DESC";
 $result = $conn->query($search);
 $message = array();
 if (mysqli_num_rows($result)) {
