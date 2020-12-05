@@ -19,8 +19,10 @@ if ($conn->connect_error) {
 }
 mysqli_query($conn, "SET NAMES 'utf8'");
 
-$search = "SELECT * FROM permission where account='$acc'";
-$result = $conn->query($search);
+$stmt = $conn->prepare("SELECT * FROM permission WHERE account = ?");
+$stmt->bind_param("s", $acc);
+$stmt->execute();
+$result = $stmt->get_result();
 if (mysqli_num_rows($result)) {
     $res = $result->fetch_assoc();
     if ($token === hash("sha256", $res["password"])) {

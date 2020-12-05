@@ -12,8 +12,9 @@ if ($conn->connect_error) {
 }
 mysqli_query($conn, "SET NAMES 'utf8'");
 
-$search = "INSERT INTO `history_$field`(`name`, `record`) VALUES ('$name', '$record')";
-$result = $conn->query($search);
+$stmt = $conn->prepare("INSERT INTO `history_?` (`name`, `record`) VALUES (?, ?)");
+$stmt->bind_param("sss", $field, $name, $record);
+$result = $stmt->execute();
 if ($result) {
     $message = array("success" => true);
 } else {

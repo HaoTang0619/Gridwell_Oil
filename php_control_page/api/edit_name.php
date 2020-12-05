@@ -15,8 +15,9 @@ if ($conn->connect_error) {
 }
 mysqli_query($conn, "SET NAMES 'utf8'");
 
-$search = "UPDATE `mobile_$field` SET `name` = '$name', `IP` = '$IP', `port` = $port_edit, `nodeID` = $nodeID WHERE `id` = $id";
-$result = $conn->query($search);
+$stmt = $conn->prepare("UPDATE `mobile_$field` SET `name` = ?, `IP` = ?, `port` = ?, `nodeID` = ? WHERE `id` = ?");
+$stmt->bind_param("ssddd", $name, $IP, $port_edit, $nodeID, $id);
+$result = $stmt->execute();
 if ($result) {
     $message = array("success" => true);
 } else {

@@ -13,8 +13,9 @@ if ($conn->connect_error) {
 }
 mysqli_query($conn, "SET NAMES 'utf8'");
 
-$search = "UPDATE `mobile_$field` SET `a` = '$new_a', `b` = '$new_b' WHERE `id` = $id";
-$result = $conn->query($search);
+$stmt = $conn->prepare("UPDATE `mobile_$field` SET `a` = ?, `b` = ? WHERE `id` = ?");
+$stmt->bind_param("ssd", $new_a, $new_b, $id);
+$result = $stmt->execute();
 if ($result) {
     $message = array("success" => true);
 } else {

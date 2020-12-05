@@ -13,7 +13,7 @@ mysqli_query($conn, "SET NAMES 'utf8'");
 
 $message = array();
 for($i = 1; $i <= $num; $i++){
-    $search = "SELECT * FROM `daily_{$field}` WHERE `device_id` = $i ORDER BY `register_time` DESC LIMIT 1";
+    $search = "SELECT * FROM `daily_$field` WHERE `device_id` = $i ORDER BY `register_time` DESC LIMIT 1";
     $result = $conn->query($search);
     if (mysqli_num_rows($result)) {
         while ($row = $result->fetch_assoc()) {
