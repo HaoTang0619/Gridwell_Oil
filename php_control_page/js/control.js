@@ -62,9 +62,15 @@ const init_table = () => {
 
           case "1":
             mes.content += `
-                  <span id="value_${mes.id}">接點訊號: ${
+                  接點訊號: <span id="signal_${mes.id}">${
               init[index + 1].signal === null ? "未知" : init[index + 1].signal
-            } / 電壓: ${
+            }</span> / 電壓: <span id="voltage_${mes.id}">${
+              init[index + 1].voltage === null
+                ? "未知"
+                : Math.round((mes.a * init[index + 1].voltage + mes.b) * 100) /
+                  100
+            }</span>
+                  <span style="display: none" id="origin_voltage_${mes.id}">${
               init[index + 1].voltage === null
                 ? "未知"
                 : init[index + 1].voltage
@@ -471,14 +477,17 @@ const checkRecv = (data, id, command) => {
         let vol_L = parseInt(data.slice(10, 12), 16);
         let vol_H = parseInt(data.slice(12, 14), 16) << 8;
         let voltage = (vol_L + vol_H) / 100;
-
         console.log(data);
 
-        const a = $(`#old_a_${id}`).html();
-        const b = $(`#old_b_${id}`).html();
-        //voltage = isFinite(voltage) ? a * voltage + b : voltage;
+        $(`#origin_voltage_${id}`).html(`${voltage}`);
 
-        $(`#value_${id}`).html(`接點訊號: ${D3} / 電壓: ${voltage}`);
+        const a = parseFloat($(`#old_a_${id}`).html());
+        const b = parseFloat($(`#old_b_${id}`).html());
+        voltage = isFinite(voltage) ? a * voltage + b : voltage;
+        voltage = Math.round(voltage * 100) / 100;
+
+        $(`#signal_${id}`).html(`${D3}`);
+        $(`#voltage_${id}`).html(`${voltage}`);
         success = true;
       }
       break;
@@ -651,6 +660,18 @@ const setFormula = (id) => {
       if (message.success) {
         $(`#old_a_${id}`).text(new_a);
         $(`#old_b_${id}`).text(new_b);
+
+        let voltage = $(`#origin_voltage_${id}`).html();
+        if (voltage !== "未知") {
+          voltage = parseFloat(voltage);
+          voltage = isFinite(voltage)
+            ? parseFloat(new_a) * voltage + parseFloat(new_b)
+            : voltage;
+          voltage = Math.round(voltage * 100) / 100;
+        }
+
+        $(`#voltage_${id}`).html(`${voltage}`);
+
         closeCheck();
         closeModal();
       } else {
