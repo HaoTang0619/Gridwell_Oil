@@ -38,26 +38,25 @@
             </fieldset>
         </div>
 
-        <div class="table_group">
-            <table class="table_root" aria-label="table">
-                <thead class="table_head">
-                    <tr class="table_head_tr">
-                        <th class="table_head_th" scope="col">操作時間</th>
-                        <th class="table_head_th" scope="col">操作設備</th>
-                        <th class="table_head_th" scope="col">操作紀錄</th>
-                    </tr>
-                </thead>
-                <!-- php_history_page/js/history.js -->
-                <!-- Loading Icon show first -->
-                <tbody class="table_body" id="table_body">
-                    <script type="text/javascript">
-                        $("#table_body").append("<td></td>");
-                        $("#table_body").append(loadingIcon("history_loading"));
-                        init_table();
-                    </script>
-                </tbody>
-            </table>
-        </div>
+        <table id="history_table" class="table_group table table-striped table-bordered table-sm" aria-label="table">
+            <thead>
+                <tr>
+                    <th data-field="time" data-sortable="true">操作時間</th>
+                    <th data-field="name">操作設備</th>
+                    <th data-field="record">操作紀錄</th>
+                </tr>
+            </thead>
+            <!-- php_history_page/js/history.js -->
+            <!-- Loading Icon show first -->
+            <tbody id="table_body">
+                <script type="text/javascript">
+                    $("#table_body").append("<td></td>");
+                    $("#table_body").append(loadingIcon("history_loading"));
+                    $("#table_body").append("<td></td>");
+                    init_table();
+                </script>
+            </tbody>
+        </table>
     </div>
 </div>
 

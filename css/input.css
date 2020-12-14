@@ -17,29 +17,33 @@
   border: 1px solid #dadce0;
   border-radius: 5px;
   bottom: 0px;
+  box-sizing: initial;
   height: 35px;
   left: -2px;
+  padding: revert;
   pointer-events: none;
   position: absolute;
-  width: 200px;
+  width: 176px;
 }
 
 .input_group .input_field .input_legend {
   color: #8d8d8d;
+  font-size: 1rem;
   left: 13px;
   position: absolute;
   top: 13px;
   transition: 0.1s;
+  width: auto;
 }
 
 .input_group .input_area:valid + .input_field,
 .input_group .input_area:-webkit-autofill + .input_field {
-  height: 44px;
+  height: 50px;
 }
 
 .input_group .input_area:focus + .input_field {
   border: 2px solid #1979a9;
-  height: 42px;
+  height: 48px;
 }
 
 .input_group .input_area:valid + .input_field .input_legend,

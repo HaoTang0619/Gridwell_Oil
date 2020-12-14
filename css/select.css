@@ -39,8 +39,7 @@
   border: 1px solid #dadce0;
   border-radius: 5px;
   bottom: 0;
-  height: 43px;
-  left: -3px;
+  height: 49px;
   padding: 0;
   pointer-events: none;
   position: absolute;
@@ -51,20 +50,21 @@
   color: #8d8d8d;
   font-size: 17px;
   font-weight: normal;
-  left: 10px;
+  left: 15px;
   position: absolute;
   pointer-events: none;
-  top: 9px;
+  top: 12px;
   transition: 0.2s ease all;
+  width: auto;
 }
 
 .select_group .select_text:valid + .select_field {
-  height: 52px;
+  height: 59px;
 }
 
 .select_group .select_text:focus + .select_field {
   border: 2px solid #1979a9;
-  height: 50px;
+  height: 59px;
 }
 
 .select_group .select_text:valid + .select_field .select_legend,

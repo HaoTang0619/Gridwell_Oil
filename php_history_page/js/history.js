@@ -9,32 +9,27 @@ const init_table = () => {
     },
     success: (data) => {
       $("#table_body").empty();
-
       const message = JSON.parse(data);
-      message.forEach((mes) => {
-        const tr_start = `<tr class="table_body_tr">`;
-        let reg_time = `
-          <td class="table_body_td">
-            <span>${mes.time}</span>
-          </td>
-        `;
 
-        let name = `
-          <td class="table_body_td">
-            <span>${mes.name}</span>
-          </td>
-        `;
-
-        const record = `
-          <td class="table_body_td">
-            <span>${mes.record}</span>
-          </td>
-        `;
-        const tr_end = `</tr>`;
-
-        $("#table_body").append(
-          `${tr_start}${reg_time}${name}${record}${tr_end}`
-        );
+      $("#history_table").bootstrapTable("destroy");
+      $("#history_table").bootstrapTable({
+        data: message,
+        exportOptions: {
+          fileName: `油壓歷史紀錄${new Date().toLocaleTimeString("en-us", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}`,
+        },
+        exportTypes: ["csv", "excel", "pdf"],
+        pagination: true,
+        paginationLoop: false,
+        showJumpTo: true,
+        // showColumns: true,
+        showExport: true,
+        search: true,
+        sortName: "time",
+        sortOrder: "desc",
       });
     },
     error: () => alert("網路錯誤，請重試！"),
