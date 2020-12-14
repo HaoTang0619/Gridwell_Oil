@@ -32,7 +32,7 @@
             <strong>帳號或密碼錯誤！</strong>
         </div>
         <div class="index_form">
-            <button class="button_group index_button" id="submit" onclick="logIn()" type="button">
+            <button class="index_button" id="submit" onclick="logIn()" type="button">
                 送出
             </button>
         </div>

@@ -15,13 +15,13 @@
 
     <div class="container">
         <div class="control_header">
-            <button class="button_group control_button" type="button">
+            <button class="control_button" type="button">
                 開 / 關
             </button>
-            <button class="button_group control_button" onclick="window.location.href='/<?php echo $site ?>/history.php'" type="button">
+            <button class="control_button" onclick="window.location.href='/<?php echo $site ?>/history.php'" type="button">
                 歷史資訊
             </button>
-            <button class="button_group control_button" onclick="logOutOpen()" type="button">
+            <button class="control_button" onclick="logOutOpen()" type="button">
                 登出
             </button>
         </div>
@@ -38,25 +38,28 @@
             </fieldset>
         </div>
 
-        <div class="table_group">
-            <table class="table_root" aria-label="table">
-                <thead class="table_head">
-                    <tr class="table_head_tr">
-                        <th class="table_head_th" scope="col">設備名稱</th>
-                        <th class="table_head_th" scope="col">設備內容</th>
-                        <th class="table_head_th" scope="col">設備狀態</th>
-                    </tr>
-                </thead>
-                <!-- php_control_page/js/control.js -->
-                <!-- Loading Icon show first -->
-                <tbody class="table_body" id="table_body">
-                    <script type="text/javascript">
-                        $("#table_body").append("<td></td>");
-                        $("#table_body").append(loadingIcon("control_loading"));
-                        init_table();
-                    </script>
-                </tbody>
-            </table>
+        <table id = "control_table" class="table_group table table-striped table-bordered table-sm" aria-label="table">
+            <thead>
+                <tr>
+                    <th data-field="infor">設備名稱</th>
+                    <th data-field="content">設備內容</th>
+                    <th data-field="status">設備狀態</th>
+                </tr>
+            </thead>
+            <!-- php_control_page/js/control.js -->
+            <!-- Loading Icon show first -->
+            <tbody id="table_body">
+                <script type="text/javascript">
+                    $("#table_body").append("<td></td>");
+                    $("#table_body").append(loadingIcon("control_loading"));
+                    $("#table_body").append("<td></td>");
+                    init_table();
+                </script>
+            </tbody>
+        </table>
+        <div class="control_footer">
+            <p>本頁面資訊每十分鐘會更新一次，若要取得即時資訊請點擊該設備右方按鈕，立即取得新資料。</p>
+            <p>按鈕上文字顯示為“未知”代表設備未開機或不在電信服務範圍內。</p>
         </div>
     </div>
 </div>

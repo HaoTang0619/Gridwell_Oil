@@ -15,13 +15,13 @@
 
     <div class="container">
         <div class="history_header">
-            <button class="button_group history_button" onclick="window.location.href='/<?php echo $site ?>/control.php'" type="button">
+            <button class="history_button" onclick="window.location.href='/<?php echo $site ?>/control.php'" type="button">
                 開 / 關
             </button>
-            <button class="button_group history_button" type="button">
+            <button class="history_button" type="button">
                 歷史資訊
             </button>
-            <button class="button_group history_button" onclick="logOutOpen()" type="button">
+            <button class="history_button" onclick="logOutOpen()" type="button">
                 登出
             </button>
         </div>

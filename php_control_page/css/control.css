@@ -65,6 +65,13 @@
   min-width: 50px;
 }
 
+.control_footer {
+  background: rgba(255, 255, 255, 0.9);
+  margin: 10px 0 50px;
+  border-radius: 10px;
+  padding: 0 16px;
+}
+
 p {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }

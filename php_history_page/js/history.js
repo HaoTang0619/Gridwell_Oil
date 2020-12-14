@@ -68,10 +68,10 @@ const showCheck = (action, id) => {
 
       const buttons1 = `
         <div class="history_form">
-            <button class="button_group" onclick="closeCheck()" type="button">
+            <button onclick="closeCheck()" type="button">
                 取消
             </button>
-            <button class="button_group" id="confirm" onclick="logOutLoading()" type="button">
+            <button id="confirm" onclick="logOutLoading()" type="button">
                 確認
             </button>
         </div>
