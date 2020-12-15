@@ -67,8 +67,11 @@ const init_table = () => {
             }</span> / 電壓: <span id="voltage_${mes.id}">${
               init[index + 1].voltage === null
                 ? "未知"
-                : Math.round((mes.a * init[index + 1].voltage + mes.b) * 100) /
-                  100
+                : Math.round(
+                    (parseFloat(mes.a) * init[index + 1].voltage +
+                      parseFloat(mes.b)) *
+                      100
+                  ) / 100
             }</span>
                   <span style="display: none" id="origin_voltage_${mes.id}">${
               init[index + 1].voltage === null
