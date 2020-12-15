@@ -12,9 +12,9 @@
 
 <!-- Bootstrap css -->
 <link rel="stylesheet" href="https://kit-free.fontawesome.com/releases/latest/css/free.min.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/bootstrap-table.min.css">
-<link rel="stylesheet" href="css/bootstrap-table-page-jump-to.min.css">
+<link rel="stylesheet" href="/<?php echo $site ?>/css/bootstrap.min.css">
+<link rel="stylesheet" href="/<?php echo $site ?>/css/bootstrap-table.min.css">
+<link rel="stylesheet" href="/<?php echo $site ?>/css/bootstrap-table-page-jump-to.min.css">
 
 <!-- Page css  -->
 <link href="/<?php echo $site ?>/php_history_page/css/history.css" rel="stylesheet" type="text/css">

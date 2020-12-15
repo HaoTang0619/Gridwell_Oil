@@ -8,6 +8,9 @@
 <link href="/<?php echo $site ?>/css/input.css" rel="stylesheet" type="text/css">
 <link href="/<?php echo $site ?>/css/nav.css" rel="stylesheet" type="text/css">
 
+<!-- Bootstrap css -->
+<link rel="stylesheet" href="/<?php echo $site ?>/css/bootstrap.min.css">
+
 <!-- Page css  -->
 <link href="/<?php echo $site ?>/php_index_page/css/index.css" rel="stylesheet" type="text/css">
 
