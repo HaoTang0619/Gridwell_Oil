@@ -431,6 +431,8 @@ const switchOnline = (id) => {
 const checkRecv = (data, id, command) => {
   if (data.length !== 16) return false;
 
+  const nodeid = parseInt($(`#nodeID_${id}`).html(), 10);
+
   let sum = 0;
   for (let i = 2; i <= 12; i += 2) {
     sum += parseInt(data.slice(i, i + 2), 16);
@@ -442,7 +444,7 @@ const checkRecv = (data, id, command) => {
   switch (command) {
     case "onn":
       if (
-        parseInt(data.slice(2, 4), 16) === id &&
+        parseInt(data.slice(2, 4), 16) === nodeid &&
         parseInt(data.slice(4, 6), 16) === 2 &&
         parseInt(data.slice(6, 8), 16) === 1
       ) {
@@ -454,7 +456,7 @@ const checkRecv = (data, id, command) => {
 
     case "off":
       if (
-        parseInt(data.slice(2, 4), 16) === id &&
+        parseInt(data.slice(2, 4), 16) === nodeid &&
         parseInt(data.slice(4, 6), 16) === 2 &&
         parseInt(data.slice(6, 8), 16) === 0
       ) {
@@ -466,7 +468,7 @@ const checkRecv = (data, id, command) => {
 
     case "stat":
       if (
-        parseInt(data.slice(2, 4), 16) === id &&
+        parseInt(data.slice(2, 4), 16) === nodeid &&
         parseInt(data.slice(4, 6), 16) === 1
       ) {
         if (parseInt(data.slice(6, 8), 16) === 1) $(`#on_off_${id}`).text("On");
