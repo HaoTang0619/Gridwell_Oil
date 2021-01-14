@@ -32,10 +32,10 @@ const init_table = () => {
         tmpData = tmpData.slice(0, -1);
       }
 
-      const init = init_value(tmpData.length);
+      const init = init_value(7); // temporary
       $("#table_body").empty();
 
-      const message = tmpData.map((mes, index) => {
+      const message = tmpData.map((mes) => {
         mes.infor = `
           <span class="control_name_span" id="name_${mes.id}">${mes.name}</span>
           <span style="display: none" id="IP_${mes.id}">${mes.IP}</span>
@@ -68,20 +68,22 @@ const init_table = () => {
           case "1":
             mes.content += `
                   接點訊號: <span id="signal_${mes.id}">${
-              init[index + 1].signal === null ? "未知" : init[index + 1].signal
+              init[mes.nodeID].signal === null
+                ? "未知"
+                : init[mes.nodeID].signal
             }</span> / 電壓: <span id="voltage_${mes.id}">${
-              init[index + 1].voltage === null
+              init[mes.nodeID].voltage === null
                 ? "未知"
                 : Math.round(
-                    (parseFloat(mes.a) * init[index + 1].voltage +
+                    (parseFloat(mes.a) * init[mes.nodeID].voltage +
                       parseFloat(mes.b)) *
                       100
                   ) / 100
             }</span>
                   <span style="display: none" id="origin_voltage_${mes.id}">${
-              init[index + 1].voltage === null
+              init[mes.nodeID].voltage === null
                 ? "未知"
-                : init[index + 1].voltage
+                : init[mes.nodeID].voltage
             }</span>
                   <span style="display: none" id="old_a_${mes.id}">${
               mes.a
@@ -132,7 +134,7 @@ const init_table = () => {
           <button class="control_online" id="status_${
             mes.id
           }" onclick="switchOnlineOpen(${mes.id})" type="button">
-              ${init[index + 1].status === "On" ? "上線" : "未知"}
+              ${init[mes.nodeID].status === "On" ? "上線" : "未知"}
           </button>
         `;
 
