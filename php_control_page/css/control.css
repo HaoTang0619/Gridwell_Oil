@@ -75,3 +75,8 @@
 p {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
+
+tr[data-index="6"] {
+  background-color: yellowgreen !important;
+  color: blue;
+}

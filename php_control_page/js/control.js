@@ -27,10 +27,15 @@ const init_table = () => {
       field: 1,
     },
     success: (data) => {
-      const init = init_value(JSON.parse(data).length);
+      let tmpData = JSON.parse(data);
+      if (acc !== "demo") {
+        tmpData = tmpData.slice(0, -1);
+      }
+
+      const init = init_value(tmpData.length);
       $("#table_body").empty();
 
-      const message = JSON.parse(data).map((mes, index) => {
+      const message = tmpData.map((mes, index) => {
         mes.infor = `
           <span class="control_name_span" id="name_${mes.id}">${mes.name}</span>
           <span style="display: none" id="IP_${mes.id}">${mes.IP}</span>

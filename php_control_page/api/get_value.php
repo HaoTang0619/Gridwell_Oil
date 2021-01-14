@@ -23,6 +23,12 @@ for($i = 1; $i <= $num; $i++){
                 "status" => $row["status"], 
             );
         }
+    }else{
+       $message[$i] = array(
+            "signal" => null, 
+            "voltage" => null, 
+            "status" => null 
+        ); 
     }
 }
 echo json_encode($message);
