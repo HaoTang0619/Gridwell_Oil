@@ -11,9 +11,8 @@ const init_select = () => {
             <option value="${mes.id}">${mes.field}</option>
         `);
       });
-      if (message.length > 0)
-        $("#select_field").val(message[0]["id"]);
+      if (message.length > 0) $("#select_field").val(message[0]["id"]);
     },
-    error: () => alert("網路錯誤，請重試！"),
+    error: () => alert("訊號不穩，請重試！"),
   });
 };

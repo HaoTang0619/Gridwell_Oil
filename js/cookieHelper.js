@@ -46,7 +46,7 @@ $.ajax({
       }
     }
   },
-  error: () => alert("網路錯誤，請重試！"),
+  error: () => alert("訊號不穩，請重試！"),
 });
 
 const logOut = () => {
