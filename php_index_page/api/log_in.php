@@ -16,7 +16,7 @@ $stmt->bind_param("ss", $acc, $pwd);
 $stmt->execute();
 $result = $stmt->get_result();
 if (mysqli_num_rows($result)) {
-    $message = array("token" => hash("sha256", $pwd) . "|" . $acc, "valid" => true);
+    $message = array("token" => hash("sha256", $pwd) . "|" . $acc . "|" . $result->fetch_array(MYSQLI_ASSOC)["department"], "valid" => true);
 } else {
     $message = array("valid" => false);
 }

@@ -28,7 +28,6 @@
 
         <div class="select_group">
             <select class="select_text" id="select_field" required>
-                <option value=""></option>
                 <script type="text/javascript">
                     init_select();
                 </script>
@@ -50,10 +49,15 @@
             <!-- Loading Icon show first -->
             <tbody id="table_body">
                 <script type="text/javascript">
-                    $("#table_body").append("<td></td>");
-                    $("#table_body").append(loadingIcon("history_loading"));
-                    $("#table_body").append("<td></td>");
-                    init_table();
+                const switchTable = () => {
+                        $("#table_body").empty();
+                        $("#table_body").append("<td></td>");
+                        $("#table_body").append(loadingIcon("history_loading"));
+                        $("#table_body").append("<td></td>");
+                        init_table();
+                    }
+                    switchTable()
+                    $("#select_field").change(() => switchTable());
                 </script>
             </tbody>
         </table>

@@ -8,7 +8,7 @@ const init_value = (num) => {
     async: false,
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
       num,
     },
     success: (data) => {
@@ -24,23 +24,28 @@ const init_table = () => {
     type: "POST",
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
     },
     success: (data) => {
-      let tmpData = JSON.parse(data);
-      if (acc !== "demo") {
-        tmpData = tmpData.slice(0, -1);
-      }
+      const maxNodeID = JSON.parse(data).reduce((acc, cur) => {
+        return Math.max(acc, parseInt(cur.nodeID, 10));
+      }, -1);
 
-      const init = init_value(7); // temporary
+      const init = init_value(maxNodeID);
+      Object.values(init).forEach((v) => {
+        v.button = v.status === "Offline" ? "未知" : "上線";
+        return v;
+      });
+
       $("#table_body").empty();
 
-      const message = tmpData.map((mes) => {
+      const message = JSON.parse(data).map((mes) => {
         mes.infor = `
           <span class="control_name_span" id="name_${mes.id}">${mes.name}</span>
           <span style="display: none" id="IP_${mes.id}">${mes.IP}</span>
           <span style="display: none" id="port_${mes.id}">${mes.port}</span>
           <span style="display: none" id="nodeID_${mes.id}">${mes.nodeID}</span>
+          <span style="display: none" id="image_${mes.id}">${mes.image}</span>
         `;
         mes.infor += `
           <button class="control_setting" onclick="editNameOpen(${
@@ -49,92 +54,43 @@ const init_table = () => {
               ${editIcon("button_svg control_svg")}
           </button>
         `;
+        mes.infor += `
+          <button class="control_setting" onclick="viewImage(${
+            mes.id
+          })" type="button">
+              ${cameraIcon("button_svg control_svg")}
+          </button>
+        `;
 
         mes.content = "";
-        switch (mes.type) {
-          case "0":
-            mes.content += `
-                  <button onclick="switchOnOpen(${mes.id})" type="button">
-                      ON
-                  </button>
-                  <button onclick="switchOffOpen(${mes.id})" type="button">
-                      OFF
-                  </button>
-                  <span id="on_off_${mes.id}">--</span>
-              </td>
-            `;
-            break;
+        mes.content += `
+          接點訊號: <span id="signal_${mes.id}">${
+          init[mes.nodeID].signal === null ? "未知" : init[mes.nodeID].signal
+        }</span> / 電壓: <span id="voltage_${mes.id}">${
+          init[mes.nodeID].voltage === null
+            ? "未知"
+            : Math.round(
+                (parseFloat(mes.a) * init[mes.nodeID].voltage +
+                  parseFloat(mes.b)) *
+                  100
+              ) / 100
+        }</span>
+        <span style="display: none" id="origin_voltage_${mes.id}">${
+          init[mes.nodeID].voltage === null ? "未知" : init[mes.nodeID].voltage
+        }</span>
+        <span style="display: none" id="old_a_${mes.id}">${mes.a}</span>
+        <span style="display: none" id="old_b_${mes.id}">${mes.b}</span>
+        <button class="control_setting" onclick="setFormulaOpen(${
+          mes.id
+        })" type="button">
+          ${settingIcon("button_svg control_svg")}
+        </button>`;
 
-          case "1":
-            mes.content += `
-                  接點訊號: <span id="signal_${mes.id}">${
-              init[mes.nodeID].signal === null
-                ? "未知"
-                : init[mes.nodeID].signal
-            }</span> / 電壓: <span id="voltage_${mes.id}">${
-              init[mes.nodeID].voltage === null
-                ? "未知"
-                : Math.round(
-                    (parseFloat(mes.a) * init[mes.nodeID].voltage +
-                      parseFloat(mes.b)) *
-                      100
-                  ) / 100
-            }</span>
-                  <span style="display: none" id="origin_voltage_${mes.id}">${
-              init[mes.nodeID].voltage === null
-                ? "未知"
-                : init[mes.nodeID].voltage
-            }</span>
-                  <span style="display: none" id="old_a_${mes.id}">${
-              mes.a
-            }</span>
-                  <span style="display: none" id="old_b_${mes.id}">${
-              mes.b
-            }</span>
-                  <button class="control_setting" onclick="setFormulaOpen(${
-                    mes.id
-                  })" type="button">
-                  ${settingIcon("button_svg control_svg")}
-                  </button>
-              </td>
-            `;
-            break;
-
-          case "2":
-            mes.content += `
-                  <span id="value_${mes.id}">--</span>
-                  <span style="display: none" id="old_a_${mes.id}">${
-              mes.a
-            }</span>
-                  <span style="display: none" id="old_b_${mes.id}">${
-              mes.b
-            }</span>
-                  <button class="control_setting" onclick="setFormulaOpen(${
-                    mes.id
-                  })" type="button">
-                  ${settingIcon("button_svg control_svg")}
-                  </button>
-              </td>
-            `;
-            break;
-
-          default:
-            mes.content += `
-                  <button onclick="viewVideo(${mes.id})" type="button">
-                      查看
-                  </button>
-                  <button onclick="editIP(${mes.id})" type="button">
-                      編輯
-                  </button>
-              </td>
-            `;
-            break;
-        }
         mes.status = `
           <button class="control_online" id="status_${
             mes.id
           }" onclick="switchOnlineOpen(${mes.id})" type="button">
-              ${init[mes.nodeID].status === "On" ? "上線" : "未知"}
+            ${init[mes.nodeID].button}
           </button>
         `;
 
@@ -182,10 +138,26 @@ const logOutLoading = () => {
   logOut();
 };
 
+let show = "vr";
+const switchVR = () => {
+  if (show === "vr") {
+    $("#vr_field").hide();
+    $("#vr_field_text").hide();
+    $("#image_field").show();
+    show = "image";
+  } else {
+    $("#vr_field").show();
+    $("#vr_field_text").show();
+    $("#image_field").hide();
+    show = "vr";
+  }
+};
+
 const editNameOpen = (id) => {
   const name = $(`#name_${id}`).html();
   const IP = $(`#IP_${id}`).html();
   const port = $(`#port_${id}`).html();
+  const imageUrl = $(`#image_${id}`).html();
   const nodeid = $(`#nodeID_${id}`).html();
 
   $("#modal").css("display", "block");
@@ -232,6 +204,34 @@ const editNameOpen = (id) => {
             </fieldset>
         </div>
     </div>
+    <div class="control_form" id="vr_field" style="display: ${
+      show === "vr" ? "flex" : "none"
+    }">
+        <span class="control_text">VR網址</span>
+        <div class="input_group">
+            <input type="text" class="input_area" id="new_vr" value="${imageUrl}" required />
+            <fieldset class="input_field">
+                <legend class="input_legend">輸入VR網址</legend>
+            </fieldset>
+        </div>
+    </div>
+    <div class="control_form" id="vr_field_text" style="display: ${
+      show === "vr" ? "flex" : "none"
+    }">
+      <span>(111.185.9.227開頭代表為上傳之圖片)</span>
+    </div>
+    <div class="control_form" id="image_field" style="display: ${
+      show === "vr" ? "none" : "flex"
+    }">
+        <span class="control_text">上傳圖片</span>
+        <div class="input_group">
+            <input type="file" accept="image/png, image/jpeg" class="input_area" id="new_image" required
+            style="padding: 0" />
+        </div>
+    </div>
+    <div class="control_form">
+      <button id="switch_vr" onclick="switchVR()">切換</button>
+    </div>
   `;
 
   const buttons = `
@@ -255,33 +255,59 @@ const editName = (id) => {
   const name = $("#new_name").val();
   const IP = $("#new_IP").val();
   const port = $("#new_port").val();
+  let imageUrl = $("#new_vr").val();
+  const image = $("#new_image")[0].files[0];
   const nodeid = $("#new_nodeID").val();
   $("#check_backdrop").css("pointer-events", "none");
   disableButton("cancel");
   disableButton("confirm");
   $("#confirm").prepend(loadingIcon());
 
+  if (show === "image") {
+    imageUrl = `http://111.185.9.227:8040/Oil/images/image_${
+      $("#select_field").val() || fields[0]
+    }_${nodeid}.jpg`;
+
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("field", $("#select_field").val() || fields[0]);
+    formData.append("nodeid", nodeid);
+
+    $.ajax({
+      url: `/${site}/php_control_page/api/add_image.php`,
+      async: false,
+      dataType: "text",
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      type: "post",
+      success: function (data) {
+        const message = JSON.parse(data);
+        if (!message.success) {
+          alert("圖片上傳失敗，請重試！");
+        }
+      },
+    });
+  }
+
   $.ajax({
     url: `/${site}/php_control_page/api/edit_name.php`,
     type: "POST",
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
       id,
       name,
       IP,
       port,
+      imageUrl,
       nodeid,
     },
     success: (data) => {
       const message = JSON.parse(data);
       if (message.success) {
-        $(`#name_${id}`).text(name);
-        $(`#IP_${id}`).text(IP);
-        $(`#port_${id}`).text(port);
-        $(`#nodeID_${id}`).text(nodeid);
-        closeCheck();
-        closeModal();
+        history.go(0);
       } else {
         alert("訊號不穩，請重試！");
         enableButton("cancel");
@@ -298,96 +324,6 @@ const editName = (id) => {
       $("#check_backdrop").css("pointer-events", "auto");
     },
   });
-};
-
-const switchOnOpen = (id) => {
-  showCheck("switch_on", id);
-};
-
-const switchOn = (id) => {
-  const IP = $(`#IP_${id}`).html();
-  const port = $(`#port_${id}`).html();
-  const nodeid = $(`#nodeID_${id}`).html();
-  $("#check_backdrop").css("pointer-events", "none");
-  disableButton("cancel");
-  disableButton("confirm");
-  $("#confirm").prepend(loadingIcon());
-
-  let flag = false;
-  const sendCommand = (i) => {
-    if (flag) return;
-    $.ajax({
-      url: `http://${IP}:${port}/onn`,
-      type: "GET",
-      dateType: "jsonp",
-      data: {
-        nodeid,
-      },
-      async: false,
-      success: (data) => {
-        if (data === "OK") {
-          getSwitchStatus(id, "onn");
-          flag = true;
-        }
-      },
-    });
-    if (!flag && i === 4) {
-      alert("訊號不穩，請重試！");
-      enableButton("cancel");
-      enableButton("confirm");
-      $("#confirm").html("確認");
-      $("#check_backdrop").css("pointer-events", "auto");
-    }
-  };
-
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => sendCommand(i), i * 1000);
-  }
-};
-
-const switchOffOpen = (id) => {
-  showCheck("switch_off", id);
-};
-
-const switchOff = (id) => {
-  const IP = $(`#IP_${id}`).html();
-  const port = $(`#port_${id}`).html();
-  const nodeid = $(`#nodeID_${id}`).html();
-  $("#check_backdrop").css("pointer-events", "none");
-  disableButton("cancel");
-  disableButton("confirm");
-  $("#confirm").prepend(loadingIcon());
-
-  let flag = false;
-  const sendCommand = (i) => {
-    if (flag) return;
-    $.ajax({
-      url: `http://${IP}:${port}/off`,
-      type: "GET",
-      dateType: "jsonp",
-      data: {
-        nodeid,
-      },
-      async: false,
-      success: (data) => {
-        if (data === "OK") {
-          getSwitchStatus(id, "off");
-          flag = true;
-        }
-      },
-    });
-    if (!flag && i === 4) {
-      alert("訊號不穩，請重試！");
-      enableButton("cancel");
-      enableButton("confirm");
-      $("#confirm").html("確認");
-      $("#check_backdrop").css("pointer-events", "auto");
-    }
-  };
-
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => sendCommand(i), i * 1000);
-  }
 };
 
 const switchOnlineOpen = (id) => {
@@ -435,10 +371,8 @@ const switchOnline = (id) => {
   }
 };
 
-const checkRecv = (data, id, command) => {
+const checkRecv = (data, id, nodeid, command) => {
   if (data.length !== 16) return false;
-
-  const nodeid = parseInt($(`#nodeID_${id}`).html(), 10);
 
   let sum = 0;
   for (let i = 2; i <= 12; i += 2) {
@@ -451,7 +385,7 @@ const checkRecv = (data, id, command) => {
   switch (command) {
     case "onn":
       if (
-        parseInt(data.slice(2, 4), 16) === nodeid &&
+        parseInt(data.slice(2, 4), 16) === parseInt(nodeid) &&
         parseInt(data.slice(4, 6), 16) === 2 &&
         parseInt(data.slice(6, 8), 16) === 1
       ) {
@@ -463,7 +397,7 @@ const checkRecv = (data, id, command) => {
 
     case "off":
       if (
-        parseInt(data.slice(2, 4), 16) === nodeid &&
+        parseInt(data.slice(2, 4), 16) === parseInt(nodeid) &&
         parseInt(data.slice(4, 6), 16) === 2 &&
         parseInt(data.slice(6, 8), 16) === 0
       ) {
@@ -475,7 +409,7 @@ const checkRecv = (data, id, command) => {
 
     case "stat":
       if (
-        parseInt(data.slice(2, 4), 16) === nodeid &&
+        parseInt(data.slice(2, 4), 16) === parseInt(nodeid) &&
         parseInt(data.slice(4, 6), 16) === 1
       ) {
         if (parseInt(data.slice(6, 8), 16) === 1) $(`#on_off_${id}`).text("On");
@@ -529,7 +463,7 @@ const getSwitchStatus = (id, command) => {
       },
       async: false,
       success: (data) => {
-        flag = checkRecv(data, id, command);
+        flag = checkRecv(data, id, nodeid, command);
       },
     });
     if (!flag && i === 39) {
@@ -569,7 +503,7 @@ const addHistory = (id, command) => {
     type: "POST",
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
       name: $(`#name_${id}`).html(),
       record,
     },
@@ -586,6 +520,12 @@ const addHistory = (id, command) => {
   });
 };
 
+const viewImage = (id) => {
+  const image = $(`#image_${id}`).html();
+
+  window.open(image, "_blank", "width=800,height=550");
+};
+
 const setFormulaOpen = (id) => {
   const old_a = $(`#old_a_${id}`).html();
   const old_b = $(`#old_b_${id}`).html();
@@ -593,7 +533,7 @@ const setFormulaOpen = (id) => {
   $("#modal").css("display", "block");
   const header = `
     <div class="control_form">
-        <h2 class="f">編輯公式</h2>
+        <h2 class="control_text">編輯公式</h2>
     </div>
   `;
 
@@ -662,7 +602,7 @@ const setFormula = (id) => {
     type: "POST",
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
       id,
       new_a,
       new_b,

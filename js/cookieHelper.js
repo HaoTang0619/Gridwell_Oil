@@ -17,7 +17,7 @@ const deleteCookie = (name = `accessToken_${site}`) => {
 
 // Check login
 const accessToken = getCookie();
-let acc;
+let acc, fields;
 $.ajax({
   url: `/${site}/api/check_login.php`,
   type: "POST",
@@ -30,6 +30,8 @@ $.ajax({
     const message = JSON.parse(data);
     if (message.valid) {
       acc = message.acc;
+      fields = message.fields;
+
       if (
         window.location.pathname.toLowerCase().replaceAll("/", "") ===
         site.toLowerCase()

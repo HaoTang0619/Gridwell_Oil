@@ -5,11 +5,13 @@ const init_table = () => {
     type: "POST",
     dateType: "text",
     data: {
-      field: 1,
+      field: $("#select_field").val() || fields[0],
     },
     success: (data) => {
       $("#table_body").empty();
-      const message = JSON.parse(data);
+      const message = JSON.parse(data).filter((mes) => {
+        return mes.show_daily || mes.daily === "0";
+      });
 
       $("#history_table").bootstrapTable("destroy");
       $("#history_table").bootstrapTable({

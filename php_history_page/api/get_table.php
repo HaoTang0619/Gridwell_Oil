@@ -18,7 +18,9 @@ if (mysqli_num_rows($result)) {
         array_push($message, array(
             "time" => $row["register_time"], 
             "name" => $row["name"], 
-            "record" => $row["record"], 
+            "record" => $row["record"],
+            "daily" => $row["daily"],
+            "show_daily" => $show_daily, // from mysql.php
         ));
     }
 }

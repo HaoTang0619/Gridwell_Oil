@@ -12,6 +12,14 @@ const settingIcon = (classes = "") => {
   return `${svg_head}${path}${svg_end}`;
 };
 
+const cameraIcon = (classes = "") => {
+  const svg_head = `<svg class="${classes}" focusable="false" viewBox="0 0 24 24" aria-hidden="true">`;
+  const circle = `<circle cx="12" cy="12" r="3.2"></circle>`;
+  const path = `<path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"></path>`;
+  const svg_end = `</svg>`;
+  return `${svg_head}${circle}${path}${svg_end}`;
+};
+
 const loadingIcon = (classes = "") => {
   const div_head = `<div class="loading_group ${classes}" role="progressbar">`;
   const svg_head = `<svg viewBox="22 22 44 44">`;
